@@ -1,0 +1,10 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kr}{class} \PYG{k+kt}{ContravariantBifunctor} \PYG{n}{p} \PYG{k+kr}{where}
+  \PYG{n}{contra1} \PYG{o+ow}{::} \PYG{p}{(}\PYG{n}{c} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{n}{a}\PYG{p}{)} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{n}{p} \PYG{n}{a} \PYG{n}{b} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{n}{p} \PYG{n}{c} \PYG{n}{b}
+  \PYG{n}{contra1} \PYG{n}{f} \PYG{o+ow}{=} \PYG{n}{contraBimap} \PYG{n}{f} \PYG{n}{id}
+  \PYG{n}{contra2} \PYG{o+ow}{::} \PYG{p}{(}\PYG{n}{d} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{n}{b}\PYG{p}{)} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{n}{p} \PYG{n}{a} \PYG{n}{b} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{n}{p} \PYG{n}{a} \PYG{n}{d}
+  \PYG{n}{contra2} \PYG{n}{g} \PYG{o+ow}{=} \PYG{n}{contraBimap} \PYG{n}{id} \PYG{n}{g}
+  \PYG{n}{contraBimap} \PYG{n}{f} \PYG{n}{g} \PYG{o+ow}{=} \PYG{n}{contra1} \PYG{n}{f} \PYG{o}{.} \PYG{n}{contra2} \PYG{n}{g}
+\PYG{k+kr}{instance} \PYG{k+kt}{ContravariantBifunctor} \PYG{k+kt}{Check} \PYG{k+kr}{where}
+  \PYG{n}{contraBimap} \PYG{n}{f} \PYG{n}{g} \PYG{n}{p} \PYG{o+ow}{=} \PYG{p}{(}\PYG{n+nf}{\PYGZbs{}} \PYG{n}{x} \PYG{n}{y} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{p}{(}\PYG{n}{f} \PYG{n}{x} \PYG{o}{\PYGZlt{}=\PYGZgt{}} \PYG{n}{g} \PYG{n}{y}\PYG{p}{)} \PYG{n}{p}\PYG{p}{)}
+\end{Verbatim}

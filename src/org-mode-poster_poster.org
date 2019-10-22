@@ -1,0 +1,254 @@
+#+startup: beamer
+#+TITLE: What constitutes a musical pattern? 
+* Preamble                                                    :ignore:
+** General comments                                           :ignore:
+# ----------------------------------------------------------------------
+# - Turn on synonyms by starting synosaurus-mode
+# - Look up words using C-c sr
+# - Turn on dictionary by starting flyspell-mode
+# - Count words by section using org-wc-display
+# ----------------------------------------------------------------------
+** Specific comments for this manuscript                      :ignore:
+# ----------------------------------------------------------------------
+# This is a comment
+# ----------------------------------------------------------------------
+** org specific settings                                      :ignore:
+# ----------------------------------------------------------------------
+#+OPTIONS: email:nil toc:nil num:nil author:nil date:t tex:t title:nil
+#+STARTUP: align fold
+#+SEQ_TODO: TODO(t) | DONE(d)
+#+TAGS: figure(f) check(c) noexport(n) ignore(i)
+#+LANGUAGE: en
+#+EXCLUDE_TAGS: noexport TODO
+#+DATE: {{{time(%Y-%m-%d %H:%M)}}}
+# ----------------------------------------------------------------------
+** Latex header                                               :ignore:
+# ----------------------------------------------------------------------
+#+LATEX_CLASS:  mybeamerposter
+#+LATEX_HEADER:  \setlength{\paperwidth}{36in}
+#+LATEX_HEADER:  \setlength{\paperheight}{48in}
+#+LATEX_HEADER: \setlength{\textwidth}{0.98\paperwidth}
+#+LATEX_HEADER: \setlength{\textheight}{0.98\paperheight}
+#+LATEX_HEADER: \graphicspath{{../output/figures/}{../lib/}}
+#+LATEX_HEADER: \usepackage[export]{adjustbox}
+#+LATEX_HEADER: \usepackage{graphicx,caption}
+#+LATEX_HEADER: \usepackage{minted}
+# #+LATEX_HEADER: \usemintedstyle{monokai}
+#+LATEX_HEADER: \usepackage{eurosym}
+#+LATEX_HEADER: \usepackage{listings}
+#+LATEX_HEADER: \usepackage{textcomp}
+#+LATEX_HEADER: \usepackage{bibentry}
+#+LATEX_HEADER: \newcommand\sumin{\sum_{i=1}^{n}}
+#+LATEX_HEADER: \newcommand{\Xoi}[1]{#1(i)}
+#+LATEX_HEADER: \newcommand{\frakPQ}[2]{\frac{\Xoi{#1}}{\Xoi{#2}}}
+#+LATEX_HEADER: \newcommand{\DKLPQ}[3]{D_{\mathrm{KL}}(#1 #3 #2)}
+#+LATEX_HEADER: \date{}
+# ----------------------------------------------------------------------
+** Latex macros                                               :ignore:
+# ----------------------------------------------------------------------
+#+LATEX_HEADER: \newcommand{\auth}{Iris Yuping Ren}
+#+LATEX_HEADER: \newcommand{\authemail}{y.ren@uu.nl}
+#+LATEX_HEADER: \newcommand{\authtwitter}{@irisyupingren}
+#+LATEX_HEADER: \newcommand{\authgithub}{github.com/irisyupingren}
+# ----------------------------------------------------------------------
+** Authors and affiliations                                   :ignore:
+# ----------------------------------------------------------------------
+#+LATEX_HEADER: \author{
+#+LATEX_HEADER: Orestis Melkonian$^{1}$, Iris Yuping Ren$^{1}$, Wouter Swierstra$^{1}$, Anja Volk$^{1}$
+#+LATEX_HEADER: \\
+#+LATEX_HEADER: \vspace{5mm}
+#+LATEX_HEADER: \normalsize{$^{1}$Department of Information and Computing Sciences,} 
+#+LATEX_HEADER: \normalsize{Utrecht University}
+#+LATEX_HEADER: }
+# ----------------------------------------------------------------------
+** Buffer-wide source code blocks                             :ignore:
+# ----------------------------------------------------------------------
+# Set elisp variables need for nice formatting We want no new lines in
+# inline results and a paragraph size of 80 characters Important: this
+# has to be evaluated witch C-c C-c in order to work in the current
+# buffer
+#+BEGIN_SRC emacs-lisp :exports none :results silent
+
+  ; Nicer formatting for code
+  (setq org-latex-listings t)
+  (setq org-latex-listings 'minted)
+  (setq org-latex-minted-options
+     '(("linenos=false") ("bgcolor=FAF0BE")))
+   
+#+END_SRC
+#
+#
+#
+# ----------------------------------------------------------------------
+
+* The poster
+:PROPERTIES:
+:BEGIN:
+:BEAMER_env: fullframe
+:END:
+
+\vspace{-2cm}
+** Left column                                        :BMCOL:
+:PROPERTIES:
+:BEAMER_col: 0.47
+:BEAMER_opt: [t]
+:END:
+*** Background                                        :B_block:
+:PROPERTIES:
+:BEAMER_env: block
+:END:
+- Musical patterns are diverse.
+- Evaluation of pattern discovery algorithms is hard.
+
+**** Block
+:PROPERTIES:
+:BEAMER_col: 0.90
+:BEAMER_opt: [T]
+:END:
+
+#+NAME: figpat
+#+CAPTION: Patterns in music
+[[file:img/examples.png]]
+
+
+#+NAME: figalg
+#+CAPTION: Same music, different algorithms discover different patterns
+[[file:img/alg.png]]
+*** Musical Transformations
+
+Taking a relative perspective, relate occurrences to each other via musical transformations: 
+$Occurrence 1 <=> Occurrence 2$
+
+**** Block
+:PROPERTIES:
+:BEAMER_col: 0.85
+:BEAMER_opt: [T]
+:END:
+
+#+NAME: figpat
+#+CAPTION: Musical Transformations
+
+[[file:img/transformations.png]]
+
+
+*** Assembling checkers: Contravariant Bifunctor :B_block:
+:PROPERTIES:
+:BEAMER_env: block
+:END:
+
+
+# Contravariant position
+
+**** Block
+:PROPERTIES:
+:BEAMER_col: 0.85
+:BEAMER_opt: [T]
+:END:
+#+BEGIN_SRC haskell
+checkBasedOnTime :: (Pattern -> Time) -> HomCheck Time -> HomCheck Pattern
+#+END_SRC
+
+[[./img/contra.png]]
+
+
+** Right column                                       :BMCOL:
+:PROPERTIES:
+:BEAMER_col: 0.47
+:BEAMER_opt: [t]
+:END:
+
+*** Implementation in Haskell :B_block:
+:PROPERTIES:
+:BEAMER_env: block
+:END:
+**** Block
+:PROPERTIES:
+:BEAMER_col: 0.90
+:BEAMER_opt: [T]
+:END:
+
+#+BEGIN_SRC haskell
+class ContravariantBifunctor p where
+  contra1 :: (c -> a) -> p a b -> p c b
+  contra1 f = contraBimap f id
+  contra2 :: (d -> b) -> p a b -> p a d
+  contra2 g = contraBimap id g
+  contraBimap f g = contra1 f . contra2 g
+instance ContravariantBifunctor Check where
+  contraBimap f g p = (\ x y -> (f x <=> g y) p)
+#+END_SRC
+
+*** Results: Classical :B_block:
+:PROPERTIES:
+:BEAMER_env: block
+:END:
+Differences between human annotations and algorithmic results in a (mainly) classical music dataset (JKU-PDD).
+\vspace{-2cm}
+
+**** Left
+:PROPERTIES:
+:BEAMER_col: 0.50
+:BEAMER_opt: [T]
+:END:
+
+\small
+# #+CAPTION: Proportion of transformations.
+#+NAME: tabcode2
+[[./img/ca.png]]
+
+**** Right
+:PROPERTIES:
+:BEAMER_col: 0.50
+:BEAMER_opt: [T]
+:END:
+[[./img/ce.png]]
+
+*** Results: Folk :B_block:
+Differences between human annotations and algorithmic results in a Dutch folk song dataset (MTC-ANN).
+**** Left
+:PROPERTIES:
+:BEAMER_col: 0.50
+:BEAMER_opt: [T]
+:END:
+[[./img/fa.png]]
+
+**** Right
+:PROPERTIES:
+:BEAMER_col: 0.50
+:BEAMER_opt: [T]
+:END:
+[[./img/fe.png]]
+*** Query and Discovery :B_block:
+:PROPERTIES:
+:BEAMER_env: block
+:END:
+
+Querying comes for free!
+
+**** Block
+:PROPERTIES:
+:BEAMER_col: 0.80
+:BEAMER_opt: [T]
+:END:
+
+\small
+#+begin_src haskell
+data UserQuery a = ToPattern a => Check Pattern :@ a
+query1 :: UserQuery (Music Pitch)
+query1 = (transpositionOf ~~ 0.5) :@ (line $ map ($qn) [c 4, e 4, g 4, c 5])
+query2 :: UserQuery (Time, Time)
+query2 = (transpositionOf ~~ 0.5) :@ (21 `upTo` 28)
+#+end_src
+
+*** Conclusions                                            :B_block:
+:PROPERTIES:
+:BEAMER_env: block
+:END:
+
+- Category theory and Haskell in modelling and implementing higher order comparison: compare occurrence relations using musical transformations. 
+- Implications for music: 
+  - Differences between musical pattern discovery algorithms and experts annotations. 
+  - Differences between different corpora. 
+- Useful pattern query/discovery tool: https://github.com/omelkonian/hs-pattrans
+
+  

@@ -1,0 +1,3 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n+nf}{checkBasedOnTime} \PYG{o+ow}{::} \PYG{p}{(}\PYG{k+kt}{Pattern} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Time}\PYG{p}{)} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{HomCheck} \PYG{k+kt}{Time} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{HomCheck} \PYG{k+kt}{Pattern}
+\end{Verbatim}
